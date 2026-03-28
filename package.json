@@ -1,10 +1,10 @@
 {
-  "name": "webpack-starter-template",
+  "name": "Battleship",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "webpack serve --config webpack.dev.js --open",
     "build": "webpack --config webpack.prod.js",
     "deploy": "git subtree push --prefix dist origin gh-pages"
@@ -21,11 +21,14 @@
   },
   "homepage": "https://github.com/NomadicHippiee/webpack-starter-template#readme",
   "devDependencies": {
+    "@babel/preset-env": "^7.29.2",
     "@eslint/js": "^10.0.1",
+    "babel-jest": "^30.3.0",
     "css-loader": "^7.1.2",
     "eslint": "^10.0.3",
     "globals": "^17.4.0",
     "html-webpack-plugin": "^5.6.6",
+    "jest": "^30.3.0",
     "mini-css-extract-plugin": "^2.10.0",
     "prettier": "^3.8.1",
     "style-loader": "^4.0.0",

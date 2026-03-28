@@ -1,14 +1,10 @@
-# Webpack Starter Template
+# Battleship Game
 
-Basic Webpack 5 setup for small JavaScript projects.
+Battleship game made with JavaScript, HTML, CSS and Webpacks.
 
-How to use it:
 
-1. Click the green "Use this template" button on GitHub
-2. Create your new repository
-3. Clone your new repository to your computer
 
-Then in the terminal:
+Terminal commands:
 
 npm install     ← Install dependencies
 npx eslint src/ ← Check your code with ESlint
@@ -24,5 +20,9 @@ src/style.css     your styles
 src/index.html    your html
 
 The rest are just configuration files.
+
+This project is made as the solution for this lesson in the Odin Project: 
+
+https://www.theodinproject.com/lessons/node-path-javascript-testing-basics#using-es6-import-statements-with-jest
 
 Enjoy.
