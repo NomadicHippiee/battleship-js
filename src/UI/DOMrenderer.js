@@ -1,92 +1,82 @@
-function renderHeader(currentPlayer) {
-  const h1 = document.createElement("h1");
-  h1.textContent = "⚓ BATTLESHIP";
-  const turnIndicator = document.createElement("div");
-  turnIndicator.classList.add("turn-indicator");
-  turnIndicator.textContent = "Current turn" + currentPlayer.name;
-
-  document.body.append(h1, turnIndicator);
+// Render header with current player turn or winner
+function renderHeader(gameController) {
+  const header = document.getElementById("header");
+  
+  if (gameController.isGameOver()) {
+    const winner = gameController.player1.gameboard.allShipsSunk() 
+      ? gameController.player2.name 
+      : gameController.player1.name;
+    header.innerHTML = `
+      <h1>⚓ BATTLESHIP</h1>
+      <p style="color: #ffd700; font-size: 1.3em; font-weight: bold;">${winner} WINS!</p>
+    `;
+  } else {
+    header.innerHTML = `
+      <h1>⚓ BATTLESHIP</h1>
+      <p>Current Turn: ${gameController.currentPlayer.name}</p>
+    `;
+  }
 }
 
-function renderBoard(gameboard, title, showShips) {
-  const container = document.createElement("div");
-  container.classList.add("board-section");
-  const titleHeading = document.createElement("h2");
-  titleHeading.textContent = title;
-  container.appendChild(titleHeading);
-  const grid = document.createElement("div");
-  grid.classList.add("game-grid");
+// Render a single board grid
+function renderBoard(gameboard, gridContainerId, showShips, selectedShip = null) {
+  const container = document.getElementById(gridContainerId);
+  container.innerHTML = "";
 
   for (let y = 0; y < 10; y++) {
     for (let x = 0; x < 10; x++) {
       const cell = document.createElement("div");
       cell.className = "cell";
-      cell.id = "cell" + x + "-" + y;
+      cell.id = `cell-${x}-${y}`;
       cell.dataset.x = x;
       cell.dataset.y = y;
 
-      const ship = gameboard.getShipAt(x, y);
-
-      if (showShips && ship) {
+      if (showShips && gameboard.grid[y][x]) {
+        const ship = gameboard.grid[y][x];
         cell.classList.add("ship");
+        
+        // Highlight selected ship
+        if (selectedShip && ship === selectedShip) {
+          cell.classList.add("selected");
+        }
       }
 
-      const attack = gameboard.wasAttacked(x, y);
-      if (attack === "hit") {
+      // Check if cell was attacked
+      const attackState = gameboard.wasAttacked(x, y);
+      if (attackState === "hit") {
         cell.classList.add("hit");
-      } else if (attack === "miss") {
+      } else if (attackState === "miss") {
         cell.classList.add("miss");
       }
 
-      grid.appendChild(cell);
+      container.appendChild(cell);
     }
   }
-
-  container.appendChild(grid);
-  return container;
 }
 
-function renderShipStatus(player) {
-  const container = document.createElement("div");
-  container.classList.add("ship-status");
-
-  const heading = document.createElement("h3");
-  heading.textContent = player.name + "s Ships";
-  container.append(heading);
+// Render ship status list
+function renderShipStatus(player, shipContainerId, selectedShip = null) {
+  const container = document.getElementById(shipContainerId);
+  container.innerHTML = `<h3>${player.name}'s Ships</h3>`;
 
   player.gameboard.ships.forEach((ship) => {
-    const shipContainer = document.createElement("div");
-    shipContainer.classList.add("ship-item");
-    const shipInfo = document.createElement("p");
-    shipInfo.textContent =
-      "Length: " + ship.length + " | Hits: " + ship.hits + "/" + ship.length;
+    const shipItem = document.createElement("div");
+    shipItem.className = "ship-item";
 
     if (ship.isSunk()) {
-      shipContainer.classList.add("sunk");
+      shipItem.classList.add("sunk");
     } else {
-      shipContainer.classList.add("alive");
+      shipItem.classList.add("alive");
     }
 
-    shipContainer.append(shipInfo);
-    container.append(shipContainer);
+    // Highlight selected ship with yellow class
+    if (selectedShip && ship === selectedShip) {
+      shipItem.classList.add("selected");
+    }
+
+    shipItem.textContent = `${ship.name} | Length: ${ship.length} | Hits: ${ship.hits}/${ship.length}`;
+    container.appendChild(shipItem);
   });
-
-  document.body.append(container);
-  return container;
 }
 
-function updateBoardCell(x, y, state) {
-    const cell = document.getElementById('cell' + x + '-' + y);
-
-    if (!cell) {
-        return;
-    }
-
-    if (state === 'hit') {
-        cell.classList.add('hit');
-    } else if (state === 'miss') {
-        cell.classList.add('miss');
-    }
-}
-
-export { renderHeader, renderBoard, renderShipStatus, updateBoardCell };
+export { renderHeader, renderBoard, renderShipStatus };

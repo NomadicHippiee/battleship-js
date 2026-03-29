@@ -16,9 +16,33 @@ export default class GameController {
     }
 
     playerAttack(x, y) {
-        let opponent = this.getOpponent();
+        // Check if already attacked this coordinate
+        const opponent = this.getOpponent();
+        const alreadyAttacked = opponent.gameboard.wasAttacked(x, y);
+        
+        if (alreadyAttacked !== null) {
+            console.log('Already attacked this coordinate!');
+            return false; // Attack failed
+        }
+        
         opponent.gameboard.receiveAttack(x, y);
-        this.switchTurn()
+        this.switchTurn();
+        return true; // Attack succeeded
+    }
+
+    computerAttack() {
+        const opponent = this.getOpponent();
+        let x, y, validMove;
+
+        // Keep trying random coordinates until finding an unattacked one
+        do {
+            x = Math.floor(Math.random() * 10);
+            y = Math.floor(Math.random() * 10);
+            validMove = opponent.gameboard.wasAttacked(x, y) === null;
+        } while (!validMove);
+
+        opponent.gameboard.receiveAttack(x, y);
+        this.switchTurn();
     }
 
     getOpponent() {
@@ -30,6 +54,6 @@ export default class GameController {
     }
 
     isGameOver() {
-    return this.player1.gameboard.allShipsSunk() || this.player2.gameboard.allShipsSunk();
+        return this.player1.gameboard.allShipsSunk() || this.player2.gameboard.allShipsSunk();
     }
 }
