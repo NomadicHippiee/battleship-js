@@ -36,6 +36,21 @@ export default class Gameboard {
     }
   }
 
+  wasAttacked(x, y) {
+    for (let coord of this.missedAttacks) {
+      if (coord[0] === x && coord[1] === y) {
+        return 'miss';
+      }
+    }
+
+    const ship = this.getShipAt(x, y);
+    if (ship && ship.hits > 0) {
+      return 'hit';
+    }
+
+    return null;
+  }
+
   allShipsSunk() {
   return this.ships.length > 0 && this.ships.every(ship => ship.isSunk());
   }
